@@ -17,5 +17,5 @@ bot.on('message', (msg) => {
     }
     
     });
-    bot.hears('evermore', (ctx) => ctx.reply('Bestie,you good?'))
+    bot.hears('evermore', (ctx) => ctx.reply('Bestie,are you ok?'))
     
