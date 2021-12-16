@@ -15,7 +15,6 @@ bot.on('message', (msg) => {
     if (msg.text.toString().toLowerCase().indexOf(Hi) === 0) {
     bot.sendMessage(msg.chat.id,"Which album are you vibing with now?");
     }
+    bot.hears('evermore', (ctx) => ctx.reply('Bestie,are you ok?'));
     
     });
-    bot.hears('evermore', (ctx) => ctx.reply('Bestie,are you ok?'))
-    
