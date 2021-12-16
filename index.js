@@ -1,19 +1,104 @@
+import dotenv from "dotenv";
+dotenv.config();
+const {Telegraf} = require('telegraf');
 
-const TelegramBot = require('node-telegram-bot-api');
-const token = '5063248322:AAElwf72Cu8wNfYZDho79g2QaHPnlC8xPKw';
-console.log('hello world');
-const bot = new TelegramBot(token, {polling: true});
-bot.onText(/\/start/, (msg) => {
+console.log('Hello world');
 
-    bot.sendMessage(msg.chat.id, "Hey there! It's good to see you :)");
-    
-    });
-    
-bot.on('message', (msg) => {
+const bot = new Telegraf(process.env.TELEGRAM_API_KEY);
+// method for invoking start command
+ 
+bot.command('start', ctx => {
+    console.log(ctx.from)
+    bot.telegram.sendMessage(ctx.chat.id, 'hello there! Welcome to my new telegram bot.', {
+    })
+})
+//method that displays the inline keyboard buttons 
 
-    var Hi = "hi";
-    if (msg.text.toString().toLowerCase().indexOf(Hi) === 0) {
-    bot.sendMessage(msg.chat.id,"Which album are you vibing with now?");
+bot.hears('animals', ctx => {
+    console.log(ctx.from)
+    let animalMessage = `great, here are pictures of animals you would love`;
+    ctx.deleteMessage();
+    bot.telegram.sendMessage(ctx.chat.id, animalMessage, {
+        reply_markup: {
+            inline_keyboard: [
+                [{
+                        text: "dog",
+                        callback_data: 'dog'
+                    },
+                    {
+                        text: "cat",
+                        callback_data: 'cat'
+                    }
+                ],
+
+            ]
+        }
+    })
+})
+
+//method that returns image of a dog
+
+bot.action('dog', ctx => {
+    bot.telegram.sendPhoto(ctx.chat.id, {
+        source: "res/dog.jpeg"
+    })
+
+})
+
+//method that returns image of a cat 
+
+bot.action('cat', ctx => {
+    bot.telegram.sendPhoto(ctx.chat.id, {
+        source: "res/cat.jpeg"
+    })
+
+})
+//method for requesting user's phone number
+
+bot.hears('phone', (ctx, next) => {
+    console.log(ctx.from)
+    bot.telegram.sendMessage(ctx.chat.id, 'Can we get access to your phone number?', requestPhoneKeyboard);
+
+})
+
+//method for requesting user's location
+
+bot.hears("location", (ctx) => {
+    console.log(ctx.from)
+    bot.telegram.sendMessage(ctx.chat.id, 'Can we access your location?', requestLocationKeyboard);
+})
+
+//constructor for providing phone number to the bot
+
+const requestPhoneKeyboard = {
+    "reply_markup": {
+        "one_time_keyboard": true,
+        "keyboard": [
+            [{
+                text: "My phone number",
+                request_contact: true,
+                one_time_keyboard: true
+            }],
+            ["Cancel"]
+        ]
     }
-    
-    });
+};
+//constructor for proving location to the bot
+
+const requestLocationKeyboard = {
+    "reply_markup": {
+        "one_time_keyboard": true,
+        "keyboard": [
+            [{
+                text: "My location",
+                request_location: true,
+                one_time_keyboard: true
+            }],
+            ["Cancel"]
+        ]
+    }
+
+}
+//method to start get the script to pulling updates for telegram 
+
+bot.launch();
